@@ -1,22 +1,29 @@
 {
   "name": "save-file",
   "version": "0.1.0",
-  "description": "save file",
+  "description": "writing file more efficient and safety with no pain",
   "main": "index.js",
   "scripts": {
-    "test": "node test/index.js"
+    "test": "mocha test/test.js"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/leeluolee/save-file.git"
   },
   "keywords": [
-    "file"
+    "writeFile"
   ],
   "author": "leeluolee",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/leeluolee/save-file/issues"
   },
-  "homepage": "https://github.com/leeluolee/save-file"
+  "homepage": "https://github.com/leeluolee/save-file",
+  "devDependencies": {
+    "async": "^1.0.0",
+    "chalk": "^1.0.0",
+    "mocha": "^2.2.5",
+    "should": "^6.0.3",
+    "steno": "^0.3.2"
+  }
 }

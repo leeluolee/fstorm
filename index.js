@@ -1,8 +1,23 @@
 
 var fs =require('fs');
+var path =require('path');
+
 var pending = {};
 
-module.exports = function (filename, content, callback){
+
+module.exports = function (filename, content, options , callback){
+
+  if(typeof options === 'function') {
+    callback = options;
+    options = 'utf8'
+  }
+  
+  if(!options) options = 'utf8';
+
+  // make sure one file touch same pending
+
+  filename = path.resolve(filename);
+
 
   var preSeed = pending[filename];
 
@@ -20,10 +35,10 @@ module.exports = function (filename, content, callback){
 
     seed.status  = 1;
 
-    fs.writeFile( filename, content, 'utf8', function(err){
+    fs.writeFile( filename, content, options , function(err){
       // after writeFile, you find the result is not the lastContent
       if(err && seed.callback) seed.callback(err);
-      pending[ filename ] = null;
+      delete pending[filename];
       if( content !== seed.content ){
         helper.saveFile(filename, content);
       }
