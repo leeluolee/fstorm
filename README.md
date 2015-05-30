@@ -2,38 +2,8 @@
 
 > writing file like a storm , but always get the desired result
 
-A very very small idea for writing file more __'safety'__ and __'fast'__, inspired by steno, but more efficient and sensible.
+A very very small idea for writing file more __'safety'__ and __'super fast'__, inspired by steno, but more efficient and sensible.
 
-## Usage
-
-```
-npm install fstrom
-```
-
-```js
-var fstrom  = require('fstorm');
-
-var writer = fstorm('./file3.txt');
-
-writer.on('end', function(){
-  assert(fs.readFileSync('./file3.txt') === '7')
-})
-
-writer
-  .write('1')
-  .write('2')
-  .write('3')
-  .write('4')
-  .write('5')
-  .write('6')
-
-process.nextTick(function(){
-  writer
-    .write('7')
-})
-
-
-```
 
 
 
@@ -41,9 +11,25 @@ process.nextTick(function(){
 
 ## What fstrom do?
 
-I will take `writeFileSync`, `writeFile`, `steno` for comparison.
+Take `writeFileSync`, `writeFile`, `steno` for comparison.
 
-You can find this benchmark in [benchmark folder](https://github.com/leeluolee/save-file/tree/master/benchmark)
+You can also find this benchmark in [benchmark folder](https://github.com/leeluolee/save-file/tree/master/benchmark)
+
+### RESULT:
+
+__10000x__
+
+![image](https://cloud.githubusercontent.com/assets/731333/7858861/80452858-056e-11e5-87b6-3f1e7928f179.png)
+
+
+__100000x__
+
+![image](https://cloud.githubusercontent.com/assets/731333/7859015/b377e318-056f-11e5-9d69-f3702197a009.png)
+
+__1000000x__
+
+steno will pending without any response, the same as `writeFile` and  `writeFileSync` the same.
+
 
 __source code__
 
@@ -107,22 +93,6 @@ var benchmarks = {
 ```
 
 
-### RESULT:
-
-__10000x__
-
-![image](https://cloud.githubusercontent.com/assets/731333/7858861/80452858-056e-11e5-87b6-3f1e7928f179.png)
-
-
-__100000x__
-
-![image](https://cloud.githubusercontent.com/assets/731333/7859015/b377e318-056f-11e5-9d69-f3702197a009.png)
-
-__1000000x__
-
-steno will pending without any response, the same as `writeFile` and  `writeFileSync` the same.
-
-
 
 __About writeFile__
 
@@ -141,8 +111,40 @@ __fstorm!!__
 
 Now, There is a more reasonable choice when you need to writing a file frequent, __only the last one will be kept__, and it is __dead fast__ beacuse some trick to avoid all unnecessary writing operation. 
 
+## Usage
+
+```
+npm install fstrom
+```
+
+```js
+var fstrom  = require('fstorm');
+
+var writer = fstorm('./file3.txt');
+
+writer.on('end', function(){
+  assert(fs.readFileSync('./file3.txt') === '7')
+})
+
+writer
+  .write('1')
+  .write('2')
+  .write('3')
+  .write('4')
+  .write('5')
+  .write('6')
+
+process.nextTick(function(){
+  writer
+    .write('7')
+})
+
+
+```
 
 ## API
+
+
 
 ### `fstrom(filename)`
 
