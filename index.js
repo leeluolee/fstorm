@@ -1,54 +1,118 @@
 
-var fs =require('fs');
+var EventEmitter = require('eventemitter3');
+var util =require('util');
 var path =require('path');
+var fs =require('fs');
 
-var pending = {};
 
+// simple FIFO Queue for avoiding memory leak
+function getCache (max) {
+  max = max || 1000;
+  var cache = {}, keys = [];
 
-module.exports = function (filename, content, options , callback){
+  return {
+    set: function( key, value ) {
+      if ( keys.length > max ) delete cache[ keys.shift() ];
+      keys.push(key);
+      return (cache[key] = value);
+    },
+    get: function(key) {
+      return cache[key];
+    },
+    del: function(key){
+      var index = keys.indexOf( key );
+      if(~index){ keys.splice(index, 1) }
+      delete cache[key]
+    }
+  };
+}
 
-  if(typeof options === 'function') {
+var FileStorm = function( filename ){
+  EventEmitter.call(this);
+  this.filename = path.resolve( filename );
+  this.status = FileStorm.IDLE;
+  this.pending = {
+    content: null,
+    callback: null,
+    options: null
+  }
+}
+
+util.inherits(FileStorm, EventEmitter); 
+
+var IDLE = 1;
+var PENDING = 2;
+var WRITING = 3;
+
+var fo = FileStorm.prototype;
+
+fo.write = function( content, options, callback ){
+
+  var filename = this.filename;
+
+  if( typeof options === 'function' ) {
     callback = options;
-    options = 'utf8'
-  }
-  
-  if(!options) options = 'utf8';
-
-  // make sure one file touch same pending
-
-  filename = path.resolve(filename);
-
-
-  var preSeed = pending[filename];
-
-  if(preSeed){
-    preSeed.content = content
-    if(preSeed.callback) preSeed.callback(null, 1);
-    preSeed.callback = callback;
-
-    return;
+    options = 'utf8';
   }
 
-  process.nextTick(function(){
+  if( !options ) options = 'utf8';
 
-    var content = seed.content;
+  var status = this.status;
+  var pending = this.pending;
+  var self = this;
 
-    seed.status  = 1;
+  if( status  === PENDING || status === WRITING ){
 
-    fs.writeFile( filename, content, options , function(err){
+    if( pending.callback ) pending.callback(null, 0)
+
+    pending.content = content;
+    pending.callback = callback;
+    pending.options = options;
+
+    return this;
+  }
+
+  this.status = PENDING;
+
+  pending.content = content;
+  pending.callback = callback;
+  pending.options = options;
+
+  process.nextTick( function(){
+
+    var content = pending.content;
+    var callback = pending.callback;
+
+    // avoid call twice
+    pending.callback = null;
+
+    self.status = WRITING;
+
+    fs.writeFile( filename, content, pending.options , function(err){
+      self.status = IDLE;
+      callback && callback(err, 1);
       // after writeFile, you find the result is not the lastContent
-      if(err && seed.callback) seed.callback(err);
-      delete pending[filename];
-      if( content !== seed.content ){
-        helper.saveFile(filename, content);
+      if( content !== pending.content ){
+        self.write( pending.content, pending.options,  pending.callback);
+      }else{ 
+        // TODO:  we may need to notify developer when filewriter is over.
+        self.emit('end', content);
       }
-      if(seed.callback) seed.callback(null);
     })
   });
+}
 
-  var seed = pending[ filename ] = {
-    status: 0,
-    content: content,
-    callback: callback
-  }
+
+fo.destroy = function(){
+  cache.del(this.filename);
+}
+
+var cache = FileStorm.cache = getCache(1000);
+
+module.exports = function (filename){
+  // make sure one file touch same pending
+  filename = path.resolve(filename);
+
+  return cache.get(filename) || cache.set(filename, new FileStorm(filename))
+
 }

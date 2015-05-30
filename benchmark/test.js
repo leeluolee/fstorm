@@ -1,63 +1,66 @@
-var saveFile = require('../')
 var async = require('async')
 var steno = require('steno')
 var chalk = require('chalk')
+var fstorm = require('../')
 var path = require('path')
 var fs = require('fs')
 
+var f = function(filename){
+  return  path.join(__dirname, filename);
+}
 
 var benchmarks = {
+  "writeFileSync": function(time, cb){
 
-  "writeFileSync": function (time, cb){
-    var pre = +new Date;
-    var filename = "writeFileSync.txt";
+    var filename = f("writeFileSync.txt");
+    var k = 0;
+
+    function compelete(){
+      k++
+      if( (k >= time) && cb) cb()
+    }
     for (var i = 0; i < time; i++) {
       fs.writeFileSync(filename, i)
+      compelete()
     }
-    console.log('writeFile time: ' + (+new Date - pre) + 'ms')
-    cb && cb();
   },
   "writeFile": function(time, cb){
-    var filename = "writeFile.txt";
-    var pre = +new Date
+    var filename = f("writeFile.txt");
     var k = 0;
-    for (var i = 0; i < time; i++) {
-      fs.writeFile( filename , i, function(){
-        if( ++k >= time){
-          console.log( 'writeFile time ' +  (+new Date - pre) + 'ms' );
-          cb && cb();
-        }
-      })
+    function compelete(){
+      k++;
+      if( (k >= time) && cb) cb()
     }
+    for (var i = 0; i < time; i++) {
+      fs.writeFile( filename , i, compelete)
+    }
+
   },
+  // I try setCallback for steno, it is also fail to get realtime content.
   "steno": function(time, cb){
-    var pre = +new Date;
-    var filename = "steno.txt";
+    var filename = f("steno.txt");
     var sfile = steno(filename);
     var k =0;
-    for (var i = 0; i < time; i++) {
 
-      sfile.write(i, function(){
-        if( ++k >= time){
-          console.log( 'steno time ' +  (+new Date - pre) + 'ms' );
-          cb && cb();
-        }
-      })
+    function compelete(){
+      k++;
+      if( (k >= time) && cb) cb()
+    }
+    for (var i = 0; i < time; i++) {
+      sfile.write(i, compelete)
     }
   },
-  "save-file": function( time, cb ){
-    var pre = +new Date;
-    var filename = "save-file.txt";
+
+  "fstorm": function( time, cb ){
+
+    var filename = f("fstorm.txt");
     var k =0;
+    var fwriter = fstorm(filename);
+
+    fwriter.on('end', cb)
+
     for (var i = 0; i < time; i++) {
-
-      saveFile( filename, i, function(){
-        if( ++k >= time){
-          console.log( 'save-file time ' +  (+new Date - pre) + 'ms' );
-          cb && cb();
-        }
-      }) 
-
+      fwriter.write(i) 
     }
   }
 
@@ -66,25 +69,30 @@ var benchmarks = {
 
 
 var run = module.exports = function (tasks, time, cb){
-  var index = -1;
+  var index = -1, pre;
   function next(){
     if(index !== -1){
       var filename = tasks[index] + '.txt';
-
-      var fileContent =  fs.readFileSync(filename, 'utf8');
-      var isError = fileContent !== '' + (time-1);
-      console.log( chalk.white['bg' + (isError? 'Red': 'Green')](isError? 'Fail': 'Success'), ' result is "' + fileContent + '"');
+      var fileContent =  fs.readFileSync( f(filename), 'utf8');
+      var isError = fileContent !== '' + (time -1);
+      console.log( chalk.blue(tasks[index] + ' time ' +  (+new Date - pre) + 'ms') );
+      console.log( chalk.white['bg' + (isError? 'Red': 'Green')](isError? 'Fail': 'Success'), filename + ' result is "' + fileContent + '"');
+      pre = +new Date;
     }
-    if( index === tasks.length-1 ) return cb && cb();
+    if( index === tasks.length-1 ){
+
+      return cb && cb();
+    }
     var task = tasks[++index];
     console.log("==================" + task+ "==========================")
     benchmarks[task]( time, next );
   }
 
   async.forEach(tasks, function( task, cb){
-    fs.unlink( task +'.txt', cb)
+    fs.unlink( f(task +'.txt'), cb)
   }, function(err){
     // if(err) console.log( err );
+    pre = +new Date;
     next();
   })
 }
@@ -93,7 +101,7 @@ var run = module.exports = function (tasks, time, cb){
 var time = parseInt(process.argv[2] || 10000)
 
 
-run(['save-file' , 'steno', 'writeFile', 'writeFileSync'  ], time )
+run(['fstorm' , 'steno', 'writeFile', 'writeFileSync'  ], time )
 
 
 

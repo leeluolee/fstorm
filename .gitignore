@@ -33,3 +33,4 @@ node_modules
 # Other
 
 benchmark/*.txt
+test/data/*.txt

@@ -1,14 +1,15 @@
 {
-  "name": "save-file",
+  "name": "fstorm",
   "version": "0.1.0",
   "description": "writing file more efficient and safety with no pain",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/test.js"
+    "test": "mocha test/test.js",
+    "benchmark": "node benchmark/test.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/leeluolee/save-file.git"
+    "url": "https://github.com/leeluolee/fstorm.git"
   },
   "keywords": [
     "writeFile"
@@ -16,14 +17,18 @@
   "author": "leeluolee",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/leeluolee/save-file/issues"
+    "url": "https://github.com/leeluolee/fstorm/issues"
   },
-  "homepage": "https://github.com/leeluolee/save-file",
+  "homepage": "https://github.com/leeluolee/fstorm",
   "devDependencies": {
     "async": "^1.0.0",
     "chalk": "^1.0.0",
+    "expect.js": "^0.3.1",
     "mocha": "^2.2.5",
     "should": "^6.0.3",
     "steno": "^0.3.2"
+  },
+  "dependencies": {
+    "eventemitter3": "^1.1.0"
   }
 }
