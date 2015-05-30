@@ -1,6 +1,6 @@
 # fstorm
 
-> writing file like a storm , but always get the desired result
+> writing file like a storm , but always get the expected result
 
 A very very small idea for writing file more __'safety'__ and __'super fast'__, inspired by steno, but more efficient and sensible.
 
@@ -18,16 +18,39 @@ You can also find this benchmark in [benchmark folder](https://github.com/leeluo
 
 __10000x__
 
-![image](https://cloud.githubusercontent.com/assets/731333/7858861/80452858-056e-11e5-87b6-3f1e7928f179.png)
+![image](https://cloud.githubusercontent.com/assets/731333/7897260/88d7268e-0707-11e5-8043-db2bf71cac49.png)
 
 
 __100000x__
 
-![image](https://cloud.githubusercontent.com/assets/731333/7859015/b377e318-056f-11e5-9d69-f3702197a009.png)
+![image](https://cloud.githubusercontent.com/assets/731333/7897263/b8044bd0-0707-11e5-8472-8af75b2aa466.png)
+
 
 __1000000x__
+![image](https://cloud.githubusercontent.com/assets/731333/7897264/cc83038a-0707-11e5-8163-72b0f4a07fd1.png)
 
-steno will pending without any response, the same as `writeFile` and  `writeFileSync` the same.
+steno will pending without any response, the same as `writeFile` and  `writeFileSync`
+
+
+
+
+
+__About writeFile__
+
+In steno's page. It mentioned that `writeFile` only take 20ms to writeFile, It is compeletely wrong.  In fact, when you run `fs.writeFile(..)`, It is only represent that the code is over, but file haven't been compelete yet.  Althought not fast as expected, but it is still much faster than `fs.writeFileSync`
+
+__About steno__
+
+steno's setCallback and write(content, callback) are both meanless for hook the content after writting.
+
+
+__About writeFileSync__
+
+It is really sloooooooooooooooow..., but it is really reliable, beacuse it execute every file writing one by one..
+
+__fstorm!!__
+
+Now, There is a more reasonable choice when you need to writing a file frequent, __only the last one will be kept__, and it is __dead fast__ beacuse some trick to avoid  unnecessary  operation.
 
 
 __source code__
@@ -84,31 +107,12 @@ var benchmarks = {
     fwriter.on('end', cb) // emitted when a squence is over
 
     for (var i = 0; i < time; i++) {
-      fwriter.write(i) 
+      fwriter.write(i)
     }
   }
 
 }
 ```
-
-
-
-__About writeFile__
-
-In steno's page. It mentioned that `writeFile` only take 20ms to writeFile, It is compeletely wrong.  In fact, when you run `fs.writeFile(..)`, It is only represent that the code is over, but file haven't been compelete yet.  Althought not fast as expected, but it is still much faster than `fs.writeFileSync`
-
-__About steno__
-
-steno's setCallback and write(content, callback) are both meanless for hook the content after writting.
-
-
-__About writeFileSync__
-
-It is really sloooooooooooooooow..., but it is really reliable, beacuse it execute every file writing one by one..
-
-__fstorm!!__
-
-Now, There is a more reasonable choice when you need to writing a file frequent, __only the last one will be kept__, and it is __dead fast__ beacuse some trick to avoid all unnecessary writing operation. 
 
 ## Usage
 
@@ -159,7 +163,7 @@ var wirter = fstrom(filename);
 
 - content: the content you want to write
 - options[Optional]: fstrom use `fs.writeFile(filename, options, callback)`. the options will be passed to it. default is 'utf8'
-- callback(err, status): 
+- callback(err, status):
   - err: follow the 'node-callback-style', if any error is occurred, it will be return.
   - status: if status is 0, mean that this operation will be ignored beacuse of following writing operations . if status is 1, the content has been written successfully.
 
@@ -190,7 +194,7 @@ Temporary， only 'end' is emitted by writer, mean that writer is stable (or no 
 ```js
 
 writer.on('end', function(content){
-  console.log(content === '2') // true 
+  console.log(content === '2') // true
 })
 
 writer.write('1')
@@ -217,4 +221,3 @@ npm test
 ### License
 
 MITTTTTTTTTTTTTTTTTT.
-
