@@ -4,8 +4,7 @@
 
 A very very small idea for writing file more __'safety'__ and __'super fast'__, inspired by steno, but more efficient and sensible.
 
-
-
+__fstorm is very suitable to be used when you need to excute frequently writing to same file.__
 
 
 
