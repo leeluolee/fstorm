@@ -86,6 +86,30 @@ describe( "FileStorm", function(){
       done();
     })
   })
+
+  it("should emit 'end' seperate when after", function( done ){
+    var filename =  path.join(__dirname, './data/it4.txt')
+    var writer = fstorm(filename);
+    var endCount = 0;
+
+    writer.on('end', function(){
+      endCount++;
+
+      if(endCount === 2){
+        var content = fs.readFileSync(filename, 'utf8');
+        expect(content).to.be.equal('2');
+        done();
+      }
+    })
+
+    writer.write('1', function(err, status){
+      setTimeout(function(){
+        writer.write('2');
+      },0)
+      
+    })
+
+  })
   after(function(){
     fs.readdir(path.join(__dirname, './data'), function(error, filenames){
       filenames.forEach(function( filename ){
