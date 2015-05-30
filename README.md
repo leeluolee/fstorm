@@ -27,6 +27,7 @@ __100000x__
 
 
 __1000000x__
+
 ![image](https://cloud.githubusercontent.com/assets/731333/7897264/cc83038a-0707-11e5-8163-72b0f4a07fd1.png)
 
 steno will pending without any response, the same as `writeFile` and  `writeFileSync`
