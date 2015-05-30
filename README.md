@@ -2,7 +2,7 @@
 
 > writing file like a storm , but always get the expected result
 
-A very very small idea for writing file more __'safety'__ and __'super fast'__, inspired by steno, but more efficient and sensible.
+A very very small idea for writing file more __'safe'__ and __'super fast'__, inspired by steno, but more efficient and sensible.
 
 __fstorm is very suitable to be used when you need to excute frequently writing to same file.__
 
