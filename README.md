@@ -8,7 +8,7 @@ __fstorm is very suitable to be used when you need to excute frequently writing 
 
 
 
-## What fstrom do?
+## What fstorm do?
 
 Take `writeFileSync`, `writeFile`, `steno` for comparison.
 
@@ -118,11 +118,11 @@ var benchmarks = {
 ## Usage
 
 ```
-npm install fstrom
+npm install fstorm
 ```
 
 ```js
-var fstrom  = require('fstorm');
+var fstorm  = require('fstorm');
 
 var writer = fstorm('./file3.txt');
 
@@ -150,20 +150,20 @@ process.nextTick(function(){
 
 
 
-### `fstrom(filename)`
+### `fstorm(filename)`
 
 return a writer instance
 
 - filename: the dest file's name
 
 ```js
-var wirter = fstrom(filename);
+var wirter = fstorm(filename);
 ```
 
 ### `writer.write( content[, options] [, callback])`
 
 - content: the content you want to write
-- options[Optional]: fstrom use `fs.writeFile(filename, options, callback)`. the options will be passed to it. default is 'utf8'
+- options[Optional]: fstorm use `fs.writeFile(filename, options, callback)`. the options will be passed to it. default is 'utf8'
 - callback(err, status):
   - err: follow the 'node-callback-style', if any error is occurred, it will be return.
   - status: if status is 0, mean that this operation will be ignored beacuse of following writing operations . if status is 1, the content has been written successfully.
