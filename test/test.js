@@ -110,6 +110,42 @@ describe( "FileStorm", function(){
     })
 
   })
+  it("should emit 'error' if any errors occurred", function( done ){
+    var filename =  path.join(__dirname, './data/xxx/it4.txt') // dir is not exist
+    var writer = fstorm(filename);
+    var endCount = 0;
+
+    writer.on('error', function(err){
+      expect(err.code).to.equal('ENOENT')
+      done();
+    })
+
+    writer.write('1')
+
+  })
+  // it("when pass function , it should emit get the function's result as content", function( done ){
+  //   var filename =  path.join(__dirname, './data/it4.txt')
+  //   var writer = fstorm(filename);
+  //   var endCount = 0;
+
+  //   writer.on('end', function(){
+  //     endCount++;
+
+  //     if(endCount === 2){
+  //       var content = fs.readFileSync(filename, 'utf8');
+  //       expect(JSON.parse(content)).to.be.eql({code:4});
+  //       done();
+  //     }
+  //   })
+
+  //   writer.write(function(){JSON.stringify({code:2})})
+  //   writer.write(function(){JSON.stringify({code:3})})
+
+  //   process.nextTick(function(){
+  //     writer.write(function(){JSON.stringify({code:4})})
+  //   })
+
+  // })
   after(function(){
     fs.readdir(path.join(__dirname, './data'), function(error, filenames){
       filenames.forEach(function( filename ){

@@ -80,9 +80,10 @@ fo.write = function( content, options, callback ){
 
   process.nextTick( function(){
 
-    var content = pending.content;
+
     var callback = pending.callback;
 
+    var content = pending.content;
     // avoid call twice
     pending.callback = null;
 
@@ -91,6 +92,8 @@ fo.write = function( content, options, callback ){
     fs.writeFile( filename, content, pending.options , function(err){
       self.status = IDLE;
       callback && callback(err, 1);
+      if(err) self.emit('error', err)
+      
       // after writeFile, you find the result is not the lastContent
       if( content !== pending.content ){
         self.write( pending.content, pending.options,  pending.callback);
@@ -116,3 +119,6 @@ module.exports = function (filename){
   return cache.get(filename) || cache.set(filename, new FileStorm(filename))
 
 }
+
+module.exports.FileStorm = FileStorm;
+

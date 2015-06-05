@@ -51,7 +51,7 @@ It is really sloooooooooooooooow..., but it is really reliable, beacuse it execu
 
 __fstorm!!__
 
-Now, There is a more reasonable choice when you need to writing a file frequent, __only the last one will be kept__, and it is __dead fast__ beacuse some trick to avoid  unnecessary  operation.
+Now, There is a more reasonable choice when you need to writing file frequently, __only the last one will be kept__, and it is __dead fast__ beacuse some trick to avoid  unnecessary  operation.
 
 
 __source code__
