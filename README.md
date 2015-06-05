@@ -188,7 +188,7 @@ writer.write('2', function(err, status){
 
 __FstormWriter is a SubClass of EventEmitter. __
 
-Temporary， only 'end' is emitted by writer, mean that writer is stable (or no new operation is blocked).
+Temporary， only 'end' and `error` is emitted by writer, mean that writer is stable (or no new operation is blocked).
 
 - end
 
@@ -201,6 +201,20 @@ writer.on('end', function(content){
 writer.write('1')
 
 writer.write('2')
+```
+
+- error
+
+```js
+
+var writer = fstorm('.folder/not/exists/db.json')
+
+writer.on('error', function(err){
+  assert(err.code === 'ENOENT')  // true
+})
+
+writer.write('2')
+
 ```
 
 
