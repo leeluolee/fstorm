@@ -1,6 +1,6 @@
 {
   "name": "fstorm",
-  "version": "0.1.1",
+  "version": "0.1.2,
   "description": "writing file more efficient and safety with no pain",
   "main": "index.js",
   "scripts": {
