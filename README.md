@@ -1,4 +1,4 @@
-# fstorm
+# fstorm [![Build Status](https://travis-ci.org/leeluolee/fstorm.svg?branch=master)](https://travis-ci.org/leeluolee/fstorm)
 
 > writing file like a storm , but always get the expected result
 
