@@ -157,7 +157,7 @@ return a writer instance
 - filename: the dest file's name
 
 ```js
-var wirter = fstorm(filename);
+var writer = fstorm(filename);
 ```
 
 ### `writer.write( content[, options] [, callback])`
@@ -188,7 +188,7 @@ writer.write('2', function(err, status){
 
 __FstormWriter is a SubClass of EventEmitter. __
 
-Temporary， only 'end' and `error` is emitted by writer, mean that writer is stable (or no new operation is blocked).
+Temporary， only `end` and `error` is emitted by writer, mean that writer is stable (or no new operation is blocked).
 
 - end
 
