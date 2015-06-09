@@ -110,6 +110,7 @@ fo.destroy = function(){
   cache.del(this.filename);
 }
 
+
 var cache = FileStorm.cache = getCache(1000);
 
 module.exports = function (filename){

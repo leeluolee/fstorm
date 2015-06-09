@@ -123,6 +123,20 @@ describe( "FileStorm", function(){
     writer.write('1')
 
   })
+
+  it('writer.destroy should remove the instance from cache', function(){
+    var filename =  path.join(__dirname, './data/xxx/it5.txt') // dir is not exist
+    var writer1 = fstorm(filename);
+    var writer2 = fstorm(filename);
+    expect(writer1).to.equal(writer2);
+
+    writer1.destroy();
+
+    var writer3 = fstorm(filename);
+    expect(writer3).to.not.equal(writer1)
+  })
+
+  it('writer.content should get the current', function(){ })
   // it("when pass function , it should emit get the function's result as content", function( done ){
   //   var filename =  path.join(__dirname, './data/it4.txt')
   //   var writer = fstorm(filename);
