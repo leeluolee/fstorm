@@ -89,7 +89,7 @@ fo.write = function( content, options, callback ){
 
     self.status = WRITING;
 
-    fs.writeFile( filename, content, pending.options , function(err){
+    fs.writeFile( filename, typeof content === 'function'? content(): content, pending.options , function(err){
       self.status = IDLE;
       callback && callback(err, 1);
       if(err) self.emit('error', err)

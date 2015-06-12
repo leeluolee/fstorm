@@ -136,30 +136,32 @@ describe( "FileStorm", function(){
     expect(writer3).to.not.equal(writer1)
   })
 
-  it('writer.content should get the current', function(){ })
-  // it("when pass function , it should emit get the function's result as content", function( done ){
-  //   var filename =  path.join(__dirname, './data/it4.txt')
-  //   var writer = fstorm(filename);
-  //   var endCount = 0;
+  it('writer.write accept function as content', function(done){
+    var filename =  path.join(__dirname, './data/it6.txt')
+    var writer = fstorm(filename);
+    var endCount = 0;
 
-  //   writer.on('end', function(){
-  //     endCount++;
+    writer.on('end', function(){
 
-  //     if(endCount === 2){
-  //       var content = fs.readFileSync(filename, 'utf8');
-  //       expect(JSON.parse(content)).to.be.eql({code:4});
-  //       done();
-  //     }
-  //   })
+      var content = fs.readFileSync(filename, 'utf8');
 
-  //   writer.write(function(){JSON.stringify({code:2})})
-  //   writer.write(function(){JSON.stringify({code:3})})
+      expect( content ).to.eql(JSON.stringify({code:5}));
 
-  //   process.nextTick(function(){
-  //     writer.write(function(){JSON.stringify({code:4})})
-  //   })
+      done();
+    })
 
-  // })
+    writer.write(function(){return JSON.stringify({code:2})})
+    writer.write(function(){return JSON.stringify({code:3})})
+
+    process.nextTick(function(){
+      writer.write(function(){return JSON.stringify({code:4})})
+      process.nextTick(function(){
+        writer.write(function(){return JSON.stringify({code:5})})
+      })
+      
+    })
+
+  })
   after(function(){
     fs.readdir(path.join(__dirname, './data'), function(error, filenames){
       filenames.forEach(function( filename ){
