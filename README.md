@@ -1,18 +1,18 @@
 # fstorm [![Build Status](https://travis-ci.org/leeluolee/fstorm.svg?branch=master)](https://travis-ci.org/leeluolee/fstorm)
 
-> writing file like a storm , but always get the expected result
+> Writing files like a storm in a reliable way
 
-A very very small idea for writing file more __'safe'__ and __'super fast'__, inspired by steno, but more efficient and sensible.
+A small idea for writing file more __'safe'__ and __'faster'__. Inspired by steno, but more efficient and sensible.
 
-__fstorm is very suitable to be used when you need to excute frequently writing to same file.__
+__fstorm is very suitable when you need to frequently write to the same file.__
 
 
 
-## What fstorm do?
+## What does fstorm do?
 
-Take `writeFileSync`, `writeFile`, `steno` for comparison.
+Take `writeFileSync`, `writeFile`, `steno` as an comparison.
 
-You can also find this benchmark in [benchmark folder](https://github.com/leeluolee/save-file/tree/master/benchmark)
+You can also find this benchmark in the [benchmark folder](https://github.com/leeluolee/save-file/tree/master/benchmark)
 
 ### RESULT:
 
@@ -30,7 +30,7 @@ __1000000x__
 
 ![image](https://cloud.githubusercontent.com/assets/731333/7897264/cc83038a-0707-11e5-8163-72b0f4a07fd1.png)
 
-steno will pending without any response, the same as `writeFile` and  `writeFileSync`
+Steno is still pending without any response, the same is with `writeFile` and  `writeFileSync`
 
 
 
@@ -38,23 +38,23 @@ steno will pending without any response, the same as `writeFile` and  `writeFile
 
 __About writeFile__
 
-In steno's page. It mentioned that `writeFile` only take 20ms to writeFile, It is compeletely wrong.  In fact, when you run `fs.writeFile(..)`, It is only represent that the code is over, but file haven't been compelete yet.  Althought not fast as expected, but it is still much faster than `fs.writeFileSync`
+In Steno's page it mentioned that `writeFile` only take 20ms to finish, however it that is wrong. In fact, when you run `fs.writeFile(..)`, it is only saying that it finished, but it hasn't.  Although it is not as fast as expected, but it is still much faster than `fs.writeFileSync`
 
 __About steno__
 
-steno's setCallback and write(content, callback) are both meanless for hook the content after writting.
+Steno's setCallback and write(content, callback) are both meanless for seeing the content after writting.
 
 
 __About writeFileSync__
 
-It is really sloooooooooooooooow..., but it is really reliable, beacuse it execute every file writing one by one..
+It is really sloooooooooooooooow..., yet reliable, as it re-executes every time for file writing.
 
 __fstorm!!__
 
-Now, There is a more reasonable choice when you need to writing file frequently, __only the last one will be kept__, and it is __dead fast__ beacuse some trick to avoid  unnecessary  operation.
+Now there is a more reasonable choice when you need to writing file frequently, __only the last write will be kept__, and it is __insanely fast__ beacuse there are some handy tricks to avoid unnecessary code.
 
 
-__source code__
+__benchmark source code__
 
 ```js
 var benchmarks = {
@@ -152,9 +152,9 @@ process.nextTick(function(){
 
 ### `fstorm(filename)`
 
-return a writer instance
+Returns a writer instance
 
-- filename: the dest file's name
+- filename: the destination file's name
 
 ```js
 var writer = fstorm(filename);
@@ -163,10 +163,10 @@ var writer = fstorm(filename);
 ### `writer.write( content[, options] [, callback])`
 
 - content: the content you want to write
-- options[Optional]: fstorm use `fs.writeFile(filename, options, callback)`. the options will be passed to it. default is 'utf8'
+- options[Optional]: fstorm can use `fs.writeFile(filename, options, callback)`. The options will be passed to it. Default is 'utf8'
 - callback(err, status):
-  - err: follow the 'node-callback-style', if any error is occurred, it will be return.
-  - status: if status is 0, mean that this operation will be ignored beacuse of following writing operations . if status is 1, the content has been written successfully.
+  - err: follow the 'node-callback-style', if any errors have occurred, it will run the function.
+  - status: If status is 0, this mean that this operation will be ignored beacuse of following writing operations. If status is 1, this means the content has been written successfully.
 
 __Example__
 
@@ -188,7 +188,7 @@ writer.write('2', function(err, status){
 
 __FstormWriter is a SubClass of EventEmitter. __
 
-Temporary， only `end` and `error` is emitted by writer, mean that writer is stable (or no new operation is blocked).
+Temporarily， only `end` and `error` is emitted by writer, mean that writer is stable (or no new operation is blocked).
 
 - end
 
@@ -235,4 +235,4 @@ npm test
 
 ### License
 
-MITTTTTTTTTTTTTTTTTT.
+**MIT**
